@@ -1,0 +1,23 @@
+version: "3"
+
+dotenv:
+  - .env
+
+exclude:
+  - volume
+
+tasks:
+  start:
+    cmds:
+      - go run ./cmd/skul
+
+  docker:build:
+    cmds:
+      - docker buildx build -t skul --progress=plain -f build/Dockerfile .
+
+  test:
+    method: none
+    sources:
+      - "**/*.go"
+    cmds:
+      - go test -run {{default "''" .GO_TEST_FILTER}} {{.GO_TEST_FLAGS}} -v {{default "./..." .CLI_ARGS}}
